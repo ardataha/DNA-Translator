@@ -6,6 +6,7 @@
 *.o
 *.pm.tdy
 *.bs
+dna.txt
 
 # Devel::Cover
 cover_db/
