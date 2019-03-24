@@ -6,6 +6,8 @@
 *.o
 *.pm.tdy
 *.bs
+
+#DNA File
 DNA.txt
 
 # Devel::Cover
