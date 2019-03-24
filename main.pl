@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use diagnostics;
-
 use feature 'switch';
 
 my $fh;
@@ -13,6 +12,7 @@ my @triplets;
 my $i;
 my $j = 0;
 
+#Genetik kod tablosu
 my %code_table = (
   "UUU" => "F", "UUC" => "F", "UUA" => "L", "UUG" => "L", "CUU" => "L",
   "CUC" => "L", "CUA" => "L", "CUG" => "L", "AUU" => "I", "AUC" => "I",
@@ -29,17 +29,19 @@ my %code_table = (
   "GGU" => "G", "GGC" => "G", "GGA" => "G", "GGG" => "G"
 );
 
-$dna_file = "dna.txt";
+#DNA bilgisinin yazılı oldugu text dosyasi
+$dna_file = "DNA.txt";
 
+#Text dosyasi okunuyor
 open($fh, '<', $dna_file)
-	or die("Dosya okunamadi : $!");
+	or die("Dosya okunamadi : $!");	
 	
 $dna_seq = <$fh>;
-
 close($fh) or die("Dosya kapatilamadi : $!");
 
 $rna_seq = "";
 
+#DNA - RNA dönüsü yapiliyor
 foreach $harf (split('', $dna_seq)) {
    given($harf) {
    	when( $_ eq 'A' ) {
@@ -56,7 +58,9 @@ foreach $harf (split('', $dna_seq)) {
    	}
    }
 }
+
 $triplets[$j] = "";
+#RNA zinciri ucer ucer tripletlere ayriliyor
 for ( $i=0; $i<length($rna_seq); $i++ ) {
 	$triplets[$j] = $triplets[$j].substr( $rna_seq, $i , 1 );
 	if($i%3 == 2){
@@ -68,16 +72,29 @@ for ( $i=0; $i<length($rna_seq); $i++ ) {
 print("DNA Dizisi: ", $dna_seq, "\n");
 print("RNA Dizisi: ", $rna_seq, "\n");
 
-print("Tripletler: ");
+print("\nTripletler: ");
 for my $triplet (@triplets){
   print($triplet, " ");
 }
 print("\n");
 
 $j = 0;
-print("Protein: ");
+print("\nProtein: ");
+
+#Genetik kod tablosuna bakilarak tripletlerler kodlaniyor
 while($triplets[$j] ne "") {
-	print($code_table{$triplets[$j]});
-	$j++;
+	if (!$code_table{$triplets[$j]}) {
+		print("\n\nGenetik kod tablosunda yer almayan bir tripletle karsilasildi: ", $triplets[$j]);
+		$triplets[$j] = "";
+	}
+	else {
+		if($code_table{$triplets[$j]} eq "STOP") {
+			$triplets[$j] = "";
+		}
+		else {
+			print($code_table{$triplets[$j]});
+			$j++;
+		}
+	}
 }
-print("\n");
+print("\n\n");
